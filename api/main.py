@@ -15,7 +15,8 @@ if not UNSPLASH_KEY:
 
 app = Flask(__name__)
 CORS(app)
-app.config["DEBUG"] = DEBUG
+app.config["DEBUG"] = DEBUGs
+
 print(__name__)
 @app.route("/new-image")
 def new_image():
