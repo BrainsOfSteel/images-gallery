@@ -7,7 +7,7 @@ const ImageCard = ({image, deleteImage}) => {
       src={image.urls.small} 
       />
       <Card.Body>
-        <Card.Title>{image.title.toUpperCase()}</Card.Title>
+        <Card.Title>{image.title?.toUpperCase()}</Card.Title>
         <Card.Text>
           {image.description || image.alt_description}
         </Card.Text>

@@ -1,34 +1,44 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import Header from "./components/Header";
 import Search from "./components/Search";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ImageCard from "./components/ImageCard";
 import { Container, Row, Col } from "react-bootstrap";
 import Welcome from "./components/Welcome";
+import axios from "axios";
 
 const UNSPLASH_KEY = process.env.REACT_APP_UNSPLASH_KEY;
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5050';
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5050";
 
 function App() {
   const [word, setWord] = useState("");
   const [images, setImages] = useState([]);
   // console.log(images);
-  const handleSearchSubmit = (e) => {
+  const getSavedImages = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/images`);
+      setImages(res.data || []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => getSavedImages(), []);
+
+  const handleSearchSubmit = async (e) => {
     e.preventDefault();
-    fetch(
-      `${API_URL}/new-image?query=${word}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setImages([{ ...data, title: word }, ...images]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    try {
+      // Waits for the response to be returned
+      const res = await axios.get(`${API_URL}/new-image?query=${word}`);
+      setImages([{ ...res.data, title: word }, ...images]);
+      console.log("adding found image to the state");
+    } catch (error) {
+      console.log(error);
+    }
     setWord("");
   };
   const handleDeleteImage = (id) => {
-      setImages(images.filter((image) => image.id !== id));
+    setImages(images.filter((image) => image.id !== id));
   };
   return (
     // <div className="App">
