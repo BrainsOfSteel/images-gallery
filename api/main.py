@@ -37,7 +37,7 @@ def new_image():
     data = response.json()
     return data
 
-@app.route("/images", methods= ["GET", "POST"])
+@app.route("/images", methods= ["GET", "POST", "DELETE"])
 def images():
     if request.method == "GET":
         #read images from database
@@ -51,6 +51,15 @@ def images():
         result = images_collection.insert_one(image)
         inserted_id = result.inserted_id
         return {"inserted_id": inserted_id}
+
+@app.route("/images/<image_id>", methods = ["DELETE"])
+def images_delete(image_id):
+    if request.method == "DELETE":
+        result = images_collection.delete_one({"_id": image_id})
+        if result is not None and result.deleted_count > 0:
+            return {"delete_id" : image_id}
+        return {"error" : "Image not found"},404
+    
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5050)
