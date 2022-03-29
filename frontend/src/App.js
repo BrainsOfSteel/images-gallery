@@ -37,8 +37,16 @@ function App() {
     }
     setWord("");
   };
-  const handleDeleteImage = (id) => {
-    setImages(images.filter((image) => image.id !== id));
+  const handleDeleteImage = async (id) => {
+    try {
+      const imageToBeDeleted = images.find((image) => image.id === id);
+      const res = await axios.delete(`${API_URL}/images/${id}`, imageToBeDeleted.id);
+      if(res.data?.delete_id){
+        setImages(images.filter((image) => image.id !== id));
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleSaveImage = async (id) => {
